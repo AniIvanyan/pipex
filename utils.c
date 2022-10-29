@@ -6,21 +6,21 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/29 14:42:34 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 17:02:21 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 19:16:53 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_environment(char **env, char *name)
+char	*get_environment(char *name)
 {
 	int	i;
 
 	i = 0;
-	while (env[i])
+	while (g_envp[i])
 	{
-		if (!ft_strncmp(env[i], name, ft_strlen(name)))
-			return (env[i] + ft_strlen(name));
+		if (!ft_strncmp(g_envp[i], name, ft_strlen(name)))
+			return (g_envp[i] + ft_strlen(name));
 		i++;
 	}
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 18:29:04 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 18:58:57 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 19:57:43 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	execute(char *cmd)
 	absolue_path = NULL;
 	args = ft_split(cmd, ' ');
 	execve(args[0], args, g_envp);
-	paths = get_environment(g_envp, "PATH=");
+	paths = get_environment("PATH=");
 	path = ft_split(paths, ':');
 	if (path)
 	{
