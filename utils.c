@@ -6,7 +6,7 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/29 14:42:34 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 15:49:50 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 17:02:21 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,10 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		str2++;
 	}
 	return (0);
+}
+
+void	ft_exit(void)
+{
+	perror("Error");
+	exit(EXIT_FAILURE);
 }

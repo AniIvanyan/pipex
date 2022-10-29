@@ -6,13 +6,13 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/29 13:45:39 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 15:45:51 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 16:09:57 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static int	ft_count(char const *s, char c)
+int	ft_count(char const *s, char c)
 {
 	int	count;
 
@@ -28,7 +28,7 @@ static int	ft_count(char const *s, char c)
 	return (count);
 }
 
-static char const	*ft_start(char const *s, char c)
+char const	*ft_start(char const *s, char c)
 {
 	while (*s)
 	{
@@ -39,7 +39,7 @@ static char const	*ft_start(char const *s, char c)
 	return (NULL);
 }
 
-static char const	*ft_end(char const *s, char c)
+char const	*ft_end(char const *s, char c)
 {
 	while (*s)
 	{
@@ -50,7 +50,7 @@ static char const	*ft_end(char const *s, char c)
 	return (NULL);
 }
 
-static int	ft_check_alloc(char **split, char *str, int index)
+int	ft_check_alloc(char **split, char *str, int index)
 {
 	if (str)
 		return (0);

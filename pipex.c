@@ -6,11 +6,13 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 18:29:04 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 16:03:29 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 18:58:57 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+char	**g_envp;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -20,15 +22,15 @@ int	main(int argc, char **argv, char **envp)
 	g_envp = envp;
 	if (argc != 5)
 	{
-		write(1, "Invalid number of arguments", 28);
+		write(STDOUT_FILENO, "Invalid number of arguments\n", 28);
 		return (EXIT_FAILURE);
 	}
-	filefd[0] = open(argv[1], O_WRONLY);
+	filefd[0] = open(argv[1], O_RDONLY);
 	filefd[1] = open(argv[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (filefd[0] < 0 || filefd[1] < 0)
-		exit(EXIT_FAILURE);
+		ft_exit();
 	if (pipe(pipefd) < 0)
-		exit(EXIT_FAILURE);
+		ft_exit();
 	forking(pipefd, filefd, argv);
 	wait(NULL);
 	wait(NULL);
@@ -44,7 +46,7 @@ void	forking(int *pipefd, int *filefd, char **argv)
 	{
 		child = fork();
 		if (child < 0)
-			exit(EXIT_FAILURE);
+			ft_exit();
 		if (child == 0)
 			process(pipefd, filefd[i], argv[i + 2], 1 - i);
 		close(pipefd[1 - i++]);
@@ -55,17 +57,17 @@ void	process(int *pipefd, int fd, char *cmd, int is_first)
 {
 	if (is_first)
 	{
-		if (dup2(fd, STDIN_FILENO) < 0 || dup2(pipefd[1], STDOUT_FILENO) < 0)
-			exit(EXIT_FAILURE);
-		close(fd);
 		close(pipefd[0]);
+		if (dup2(fd, STDIN_FILENO) < 0 || dup2(pipefd[1], STDOUT_FILENO) < 0)
+			ft_exit();
+		close(fd);
 	}
 	else
 	{
-		if (dup2(pipefd[0], STDIN_FILENO < 0 || dup2(fd, STDOUT_FILENO < 0)))
-			exit(EXIT_FAILURE);
-		close(fd);
 		close(pipefd[1]);
+		if (dup2(pipefd[0], STDIN_FILENO) < 0 || dup2(fd, STDOUT_FILENO) < 0)
+			ft_exit();
+		close(fd);
 	}
 	execute(cmd);
 }
@@ -88,10 +90,10 @@ void	execute(char *cmd)
 	{
 		while (path[i])
 		{
-			absolue_path = ft_strjoin3(path[i++], "/", cmd);
+			absolue_path = ft_strjoin3(path[i++], "/", args[0]);
 			execve(absolue_path, args, g_envp);
 			free(absolue_path);
 		}	
 	}
-	perror("Error:");
+	ft_exit();
 }
