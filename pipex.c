@@ -6,20 +6,18 @@
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 18:29:04 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 13:22:12 by aivanyan         ###   ########.fr       */
+/*   Updated: 2022/10/29 16:03:29 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	int		pipefd[2];
 	int		filefd[2];
-	pid_t	child;
-	int		i;
-	
-	i = 0;
+
+	g_envp = envp;
 	if (argc != 5)
 	{
 		write(1, "Invalid number of arguments", 28);
@@ -31,31 +29,69 @@ int main(int argc, char **argv, char **envp)
 		exit(EXIT_FAILURE);
 	if (pipe(pipefd) < 0)
 		exit(EXIT_FAILURE);
+	forking(pipefd, filefd, argv);
+	wait(NULL);
+	wait(NULL);
+}
+
+void	forking(int *pipefd, int *filefd, char **argv)
+{
+	int		i;
+	pid_t	child;
+
+	i = 0;
 	while (i < 2)
 	{
 		child = fork();
 		if (child < 0)
 			exit(EXIT_FAILURE);
 		if (child == 0)
-			process(pipefd[1 - i], filefd[i], argv[i + 2], 1 - i);
+			process(pipefd, filefd[i], argv[i + 2], 1 - i);
 		close(pipefd[1 - i++]);
 	}
-	wait(NULL);
-	wait(NULL);
 }
 
-void	process(int pipefd, int fd, char *cmd, int is_first)
+void	process(int *pipefd, int fd, char *cmd, int is_first)
 {
 	if (is_first)
-		if (dup2(fd, STDIN_FILENO) < 0 || dup2(pipefd, STDOUT_FILENO) < 0)
+	{
+		if (dup2(fd, STDIN_FILENO) < 0 || dup2(pipefd[1], STDOUT_FILENO) < 0)
 			exit(EXIT_FAILURE);
+		close(fd);
+		close(pipefd[0]);
+	}
 	else
-		if (dup2(pipefd, STDIN_FILENO < 0 || dup2(fd, STDOUT_FILENO < 0)))
+	{
+		if (dup2(pipefd[0], STDIN_FILENO < 0 || dup2(fd, STDOUT_FILENO < 0)))
 			exit(EXIT_FAILURE);
-	execute(cmd);			
+		close(fd);
+		close(pipefd[1]);
+	}
+	execute(cmd);
 }
 
-execute(char *cmd)
+void	execute(char *cmd)
 {
-	
+	char	**args;
+	char	*paths;
+	char	**path;
+	char	*absolue_path;
+	int		i;
+
+	i = 0;
+	absolue_path = NULL;
+	args = ft_split(cmd, ' ');
+	execve(args[0], args, g_envp);
+	paths = get_environment(g_envp, "PATH=");
+	path = ft_split(paths, ':');
+	if (path)
+	{
+		while (path[i])
+		{
+			absolue_path = ft_strjoin3(path[i++], "/", cmd);
+			execve(absolue_path, args, g_envp);
+			free(absolue_path);
+		}	
+	}
+	perror("Error:");
 }

@@ -1,76 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_split.c                                      :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aivanyan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/29 13:47:16 by aivanyan          #+#    #+#             */
-/*   Updated: 2022/10/29 13:50:52 by aivanyan         ###   ########.fr       */
+/*   Created: 2022/10/29 14:42:34 by aivanyan          #+#    #+#             */
+/*   Updated: 2022/10/29 15:49:50 by aivanyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	*ft_calloc(size_t count, size_t size)
+char	*get_environment(char **env, char *name)
 {
-	void	*ptr;
-
-	ptr = malloc(count * size);
-	if (ptr == NULL)
-		return (NULL);
-	ft_bzero(ptr, count * size);
-	return (ptr);
-}
-
-
-void	ft_bzero(void *s, size_t n)
-{
-	ft_memset(s, 0, n);
-}
-
-void	*ft_memset(void *b, int c, size_t len)
-{
-	unsigned char	*s;
-
-	s = b;
-	while (len)
-	{
-		*s = c;
-		s++;
-		len--;
-	}
-	return (b);
-}
-
-size_t	ft_strlcpy(char *dest, const char *src, size_t dstsize)
-{
-	size_t	i;
+	int	i;
 
 	i = 0;
-	if (dstsize != 0)
+	while (env[i])
 	{
-		while (i < dstsize - 1 && src[i] != '\0')
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
+		if (!ft_strncmp(env[i], name, ft_strlen(name)))
+			return (env[i] + ft_strlen(name));
+		i++;
 	}
-	return (ft_strlen(src));
-}
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	count;
-
-	count = 0;
-	while (*s)
-	{
-		count++;
-		s++;
-	}
-	return (count);
+	return (NULL);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -96,4 +49,33 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	join[i] = '\0';
 	return (join);
+}
+
+char	*ft_strjoin3(char *str1, char *str2, char *str3)
+{
+	char	*str12;
+	char	*str123;
+
+	str12 = ft_strjoin(str1, str2);
+	str123 = ft_strjoin(str12, str3);
+	free(str12);
+	return (str123);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	unsigned const char	*str1;
+	unsigned const char	*str2;
+
+	str1 = (unsigned const char *)s1;
+	str2 = (unsigned const char *)s2;
+	while ((*str1 || *str2) && n > 0)
+	{
+		if (*str1 != *str2)
+			return (*str1 - *str2);
+		n--;
+		str1++;
+		str2++;
+	}
+	return (0);
 }
